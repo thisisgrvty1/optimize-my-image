@@ -1,0 +1,5 @@
+{
+  "name": "Optimize my Image v1.3.9 - dg",
+  "description": "An advanced client-side image optimization tool to resize, compress, and rename images for web performance. Supports batch processing, various formats, and maintains transparency.",
+  "requestFramePermissions": []
+}
