@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { View } from '../types';
 import { useI8n } from '../hooks/useI8n';
@@ -21,6 +19,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ view, onNavigateHome }) => {
     optimizer: t('breadcrumbOptimizer'),
     imprint: t('breadcrumbImprint'),
     privacy: t('breadcrumbPrivacyPolicy'),
+    changelog: t('breadcrumbChangelog'),
   };
 
   return (

@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2025-09-05
+
+### Added
+- **Changelog Page**: Created a dedicated changelog page accessible by clicking the version number in the header or footer.
+- The new page highlights the latest version's changes and provides a historical list of all previous updates.
+
+## [1.4.1] - 2025-09-04
+
+### Changed
+- **Mobile Performance Overhaul**: Significantly improved performance and responsiveness on mobile devices.
+  - Replaced performance-intensive scroll-linked animations (scrub) with lightweight, viewport-triggered animations on smaller screens.
+  - Reduced the intensity of demanding CSS effects like background blurs and glows on mobile to ensure a smooth, jank-free experience.
+  - Adjusted typography and layout elements in the landing page for better readability and usability on mobile viewports.
+
+## [1.4.0] - 2025-09-03
+
+### Changed
+- Newly uploaded images now appear at the top of the list for easier access and a more intuitive workflow.
+
 ## [1.3.9] - 2025-09-02
 
 ### Changed

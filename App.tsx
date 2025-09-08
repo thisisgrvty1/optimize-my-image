@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ImageFile, ImageSettings, View } from './types';
 import { processImage, getImageMetadata } from './services/imageService';
@@ -13,6 +10,7 @@ import LandingPage from './components/LandingPage';
 import Breadcrumbs from './components/Breadcrumbs';
 import ImprintPage from './components/ImprintPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import ChangelogPage from './components/ChangelogPage';
 import Footer from './components/Footer';
 import { MAX_FILES } from './constants';
 import { useI8n } from './hooks/useI8n';
@@ -113,7 +111,7 @@ const App: React.FC = () => {
     }
 
     if (newImageFiles.length > 0) {
-        setImageFiles(prev => [...prev, ...newImageFiles]);
+        setImageFiles(prev => [...newImageFiles, ...prev]);
     }
   }, [imageFiles.length, t]);
   
@@ -312,6 +310,13 @@ const App: React.FC = () => {
             <PrivacyPolicyPage />
           </div>
         );
+      case 'changelog':
+        return (
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <Breadcrumbs view={view} onNavigateHome={() => navigateTo('landing')} />
+                <ChangelogPage />
+            </div>
+        );
       case 'landing':
       default:
         return <LandingPage onStart={() => navigateTo('optimizer')} playIntro={playContentIntro} />;
@@ -324,7 +329,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans">
-      <Header onNavigateHome={() => navigateTo('landing')} playIntro={playContentIntro && view === 'landing'} />
+      <Header onNavigateHome={() => navigateTo('landing')} onNavigate={navigateTo} playIntro={playContentIntro && view === 'landing'} />
       <main className="flex-grow">
         <div key={view} className="animate-view-enter">
           {renderContent()}
