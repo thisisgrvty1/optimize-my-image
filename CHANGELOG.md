@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2025-09-08
+
+### Changed
+- Redesigned the "Drag & Drop" section on the landing page with a bold, modern, typographic style. The new design is simple and bright, featuring a glowing icon on a transparent background, with no shadows or text-shadows.
+
+## [1.4.4] - 2025-09-07
+
+### Changed
+- Reworked the theme and dark mode switchers for improved performance and a simpler user experience on mobile devices.
+- Optimized global color transition animations for smoother performance across the application.
+
+## [1.4.3] - 2025-09-06
+
+### Fixed
+- Resolved horizontal overflow issues on mobile devices for a cleaner, contained layout, ensuring decorative elements do not break the viewport.
+
+### Changed
+- Updated application version across the UI and project files to `1.4.3`.
+
 ## [1.4.2] - 2025-09-05
 
 ### Added
@@ -87,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.3] - 2025-08-22
 
 ### Added
-- A new, beautifully animated landing page with smooth on scroll animations using GSAP to showcase features and improve user onboarding.
+- A new, beautifully animated landing page with smooth on scroll animations using GSAP to improve user onboarding.
 
 ## [1.3.2] - 2025-08-20
 

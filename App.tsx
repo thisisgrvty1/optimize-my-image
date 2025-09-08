@@ -328,7 +328,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans">
+    <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans overflow-x-hidden">
       <Header onNavigateHome={() => navigateTo('landing')} onNavigate={navigateTo} playIntro={playContentIntro && view === 'landing'} />
       <main className="flex-grow">
         <div key={view} className="animate-view-enter">

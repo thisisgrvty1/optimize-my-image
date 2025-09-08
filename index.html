@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Optimize my Image v1.4.2</title>
+    <title>Optimize my Image v1.4.5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -207,7 +207,7 @@
 
       /* Global smooth transitions for theme changes */
       *, *::before, *::after {
-        transition: background-color var(--duration-medium) var(--ease-in-out-quad), color var(--duration-medium) var(--ease-in-out-quad), border-color var(--duration-medium) var(--ease-in-out-quad), box-shadow var(--duration-medium) var(--ease-in-out-quad);
+        transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
       }
 
       body {
@@ -521,6 +521,23 @@
           }
       }
 
+      @keyframes icon-glow-vibrant-light {
+        0%, 100% { 
+          filter: drop-shadow(0 0 15px rgb(var(--color-primary-light) / 0.7)) drop-shadow(0 0 5px rgb(var(--color-secondary-light) / 0.5));
+        }
+        50% { 
+          filter: drop-shadow(0 0 30px rgb(var(--color-primary-light) / 1)) drop-shadow(0 0 10px rgb(var(--color-secondary-light) / 0.8)); 
+        }
+      }
+      @keyframes icon-glow-vibrant-dark {
+        0%, 100% { 
+          filter: drop-shadow(0 0 15px rgb(var(--color-primary-dark) / 0.7)) drop-shadow(0 0 5px rgb(var(--color-secondary-dark) / 0.5));
+        }
+        50% { 
+          filter: drop-shadow(0 0 30px rgb(var(--color-primary-dark) / 1)) drop-shadow(0 0 10px rgb(var(--color-secondary-dark) / 0.8)); 
+        }
+      }
+
       .animate-shockwave span {
           position: absolute;
           inset: 0;
@@ -544,6 +561,13 @@
       }
       .dark .animate-icon-glow-intense {
           animation-name: icon-glow-intense-dark;
+      }
+      
+      .animate-icon-glow-vibrant {
+        animation: icon-glow-vibrant-light 3s infinite ease-in-out;
+      }
+      .dark .animate-icon-glow-vibrant {
+        animation-name: icon-glow-vibrant-dark;
       }
 
       /* How it works Section */
