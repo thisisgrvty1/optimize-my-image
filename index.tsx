@@ -4,7 +4,6 @@ import App from './App';
 import { I18nProvider } from './contexts/I18nContext';
 import { CookieConsentProvider } from './contexts/CookieConsentContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { SettingsProvider } from './contexts/SettingsContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -17,9 +16,7 @@ root.render(
     <I18nProvider>
       <CookieConsentProvider>
         <ThemeProvider>
-          <SettingsProvider>
-            <App />
-          </SettingsProvider>
+          <App />
         </ThemeProvider>
       </CookieConsentProvider>
     </I18nProvider>

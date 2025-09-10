@@ -9,6 +9,115 @@ export interface ChangelogEntry {
   
   export const changelogData: ChangelogEntry[] = [
     {
+      version: '1.4.76',
+      date: '2025-09-16',
+      changes: [
+        {
+          type: 'Changed',
+          items: [
+            '**Performance**: Enhanced code splitting across the application. Route-based components (`LandingPage`, `PrivacyPolicyPage`, etc.) and interaction-based components (modals, overlays) are now loaded on-demand using `React.lazy()` and `<Suspense>`, significantly improving initial load time and reducing the main bundle size.',
+            '**Security**: Refactored API key management to align with best practices. The Google API key is now sourced exclusively from the `process.env.API_KEY` environment variable.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.75',
+      date: '2025-09-15',
+      changes: [
+        {
+          type: 'Changed',
+          items: [
+            '**Accessibility Overhaul**: Conducted a full accessibility audit and implemented major improvements across the application.',
+            'All interactive elements are now fully **keyboard-navigable**, including custom controls like sliders and file dropzones.',
+            'Enhanced screen reader support with comprehensive **ARIA attributes** for better context and usability.',
+            'Updated focus styles to use `:focus-visible` for a cleaner UI that only shows focus rings during keyboard navigation.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.74',
+      date: '2025-09-14',
+      changes: [
+        {
+          type: 'Added',
+          items: [
+            'Implemented a **magnifying glass feature** on the compressed image preview to inspect quality.',
+            'Added a **zoom level selector** (2x, 4x, 6x) to the magnifier for more detailed inspection.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.73',
+      date: '2025-09-13',
+      changes: [
+        {
+          type: 'Fixed',
+          items: [
+            'Fixed an issue where the **"Add More" button** in the optimizer view failed to open a file selection window, preventing users from adding more images to an existing batch.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.72',
+      date: '2025-09-12',
+      changes: [
+        {
+          type: 'Added',
+          items: [
+            '**Session Persistence**: The user\'s session, including all uploaded images and their settings, is now automatically saved to local storage. Work is retained across page reloads and browser restarts.',
+            '**Active Session Indicator**: A visual indicator with a file count now appears in the header when navigating away from the optimizer, providing a one-click way to return to an active session.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.71',
+      date: '2025-09-11',
+      changes: [
+        {
+          type: 'Changed',
+          items: [
+            'Redesigned the **Editing Mode Bar** with a bold, saturated, and visually engaging style. The new design features glowing graphical elements and a clearer visual hierarchy to guide the user through batch operations.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.7',
+      date: '2025-09-10',
+      changes: [
+        {
+          type: 'Changed',
+          items: [
+            'Redesigned and streamlined the **Editing Mode Bar** for a cleaner user interface and improved visual hierarchy. The new design separates the primary action from secondary controls on desktop and provides a structured, user-friendly layout on mobile devices.',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.4.6',
+      date: '2025-09-09',
+      changes: [
+        {
+          type: 'Added',
+          items: [
+            'Added a **"Generate All SEO"** button to the batch actions bar to generate alt text for all uploaded images at once using the Gemini API.',
+          ],
+        },
+        {
+          type: 'Changed',
+          items: [
+            'Improved the layout of the batch actions bar on desktop devices for a cleaner, more organized **single-row appearance**.',
+            'Enhanced the **visual hierarchy** of the batch action buttons.',
+          ],
+        },
+      ],
+    },
+    {
       version: '1.4.5',
       date: '2025-09-08',
       changes: [

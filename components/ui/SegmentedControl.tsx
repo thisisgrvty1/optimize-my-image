@@ -9,13 +9,14 @@ interface SegmentedControlProps {
   options: SegmentedControlOption[];
   value: string;
   onChange: (value: string) => void;
+  ariaLabel: string;
 }
 
-const SegmentedControl: React.FC<SegmentedControlProps> = ({ options, value, onChange }) => {
+const SegmentedControl: React.FC<SegmentedControlProps> = ({ options, value, onChange, ariaLabel }) => {
   const activeIndex = options.findIndex(opt => opt.value === value);
 
   return (
-    <div className="relative flex w-full max-w-xs p-1 bg-gray-200 dark:bg-gray-700 rounded-full">
+    <div role="group" aria-label={ariaLabel} className="relative flex w-full max-w-xs p-1 bg-gray-200 dark:bg-gray-700 rounded-full">
       <span
         className="absolute top-1 left-1 bottom-1 bg-card-light dark:bg-card-dark rounded-full shadow-lg-theme transition-transform duration-300 ease-in-out"
         style={{
@@ -28,6 +29,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({ options, value, onC
         <button
           key={option.value}
           onClick={() => onChange(option.value)}
+          aria-pressed={value === option.value}
           className={`relative z-10 w-full py-2 text-sm font-bold rounded-full transition-colors duration-300 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background-dark
                       ${value === option.value
                         ? 'text-primary-light dark:text-primary-dark'

@@ -36,7 +36,10 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ view, onNavigateHome }) => {
         <li>
           <div className="flex items-center">
             <ChevronRightIcon className="w-5 h-5 text-gray-400" />
-            <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+            <span
+              className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400"
+              aria-current="page"
+            >
               {pageTitleMap[view]}
             </span>
           </div>

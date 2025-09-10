@@ -16,7 +16,7 @@ const Toggle: React.FC<ToggleProps> = ({ id, checked, disabled, ...props }) => {
         {...props} 
       />
       <div className="w-14 h-8 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                      peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-light/50 dark:peer-focus:ring-primary-dark/50
+                      peer-focus:outline-none peer-focus-visible:ring-4 peer-focus-visible:ring-primary-light/50 dark:peer-focus-visible:ring-primary-dark/50
                       peer-checked:bg-primary-light dark:peer-checked:bg-primary-dark
                       after:content-[''] after:absolute after:top-1 after:left-1
                       after:bg-card-light after:rounded-full after:h-6 after:w-6 

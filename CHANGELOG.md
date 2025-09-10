@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.76] - 2025-09-16
+
+### Changed
+- **Performance**: Enhanced code splitting across the application. Route-based components (`LandingPage`, `PrivacyPolicyPage`, etc.) and interaction-based components (modals, overlays) are now loaded on-demand using `React.lazy()` and `<Suspense>`, significantly improving initial load time and reducing the main bundle size.
+- **Security**: Refactored API key management to align with best practices. The Google API key is now sourced exclusively from the `process.env.API_KEY` environment variable, removing the need for users to input it in the UI and enhancing security.
+
+## [1.4.75] - 2025-09-15
+
+### Changed
+- **Accessibility Overhaul**: Conducted a full accessibility audit and implemented major improvements.
+  - All interactive elements are now fully keyboard-navigable.
+  - Added comprehensive ARIA attributes for enhanced screen reader support.
+  - Updated focus styles to use `focus-visible` for a cleaner experience for mouse users.
+  - Implemented programmatic focus management for modals and banners.
+
+## [1.4.74] - 2025-09-14
+
+### Added
+- Implemented a **magnifying glass feature** on the compressed image preview to inspect quality.
+- Added a **zoom level selector** (2x, 4x, 6x) to the magnifier for more detailed inspection.
+
+## [1.4.73] - 2025-09-13
+
+### Fixed
+- Fixed an issue where the "Add More" button in the optimizer view failed to open a file selection window, preventing users from adding more images to an existing batch.
+
+## [1.4.72] - 2025-09-12
+
+### Added
+- **Session Persistence**: The user's session, including all uploaded images and their settings, is now automatically saved to local storage. Work is retained across page reloads and browser restarts.
+- **Active Session Indicator**: A visual indicator with a file count now appears in the header when navigating away from the optimizer, providing a one-click way to return to an active session.
+
+## [1.4.71] - 2025-09-11
+
+### Changed
+- Redesigned the **Editing Mode Bar** with a bold, saturated, and visually engaging style. The new design features glowing graphical elements and a clearer visual hierarchy to guide the user through batch operations.
+
+## [1.4.7] - 2025-09-10
+
+### Changed
+- Redesigned and streamlined the **Editing Mode Bar** for a cleaner user interface and improved visual hierarchy. The new design separates the primary action from secondary controls on desktop and provides a structured, user-friendly layout on mobile devices.
+
+## [1.4.6] - 2025-09-09
+
+### Added
+- Added a "Generate All SEO" button to the batch actions bar to generate alt text for all uploaded images at once using the Gemini API.
+
+### Changed
+- Improved the layout of the batch actions bar on desktop devices for a cleaner, more organized single-row appearance.
+- Enhanced the visual hierarchy of the batch action buttons.
+
 ## [1.4.5] - 2025-09-08
 
 ### Changed
@@ -55,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.8] - 2025-08-31
 
 ### Changed
-- **Landing Page Section Order**: Reordered the sections on the landing page for a more intuitive and impactful user flow. The new order is Hero, Drag & Drop, Powerful Features, Boost Your Website, Private & Secure, and How It Works.
+- **Landing Page Section Order**: Reordered the sections on the landing page for a more intuitive and impactful user flow.
 - **Landing Page Redesign**: Redesigned the "Packed with Powerful Features" section with a vibrant, glowing aesthetic, replacing the individual cards with a single, large "glass-morphism" container to unify the design and align it with other modern sections of the page.
 - **Privacy Section Animation**: Enhanced the "Private & Secure" section with a bold, attention-grabbing animation, including a radiating "shockwave" pulse and a more intense glow effect on the central icon to emphasize the feature's importance.
 

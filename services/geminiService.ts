@@ -11,15 +11,16 @@ const getPrompt = (language: Language) => {
     return `Generate a concise, SEO-friendly alt text for this image in ${targetLanguage}. Describe the main subject, context, and any important text. Keep it under 125 characters. The response should only be the alt text itself, with no introductory phrases like "Alt text:" or quotes.`;
 };
 
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
 
 export const generateAltText = async (
-    apiKey: string, 
     image: { mimeType: string; data: string },
     language: Language
 ): Promise<string> => {
+    if (!process.env.API_KEY) {
+        throw new Error('apiKeyMissingError');
+    }
     try {
-        const ai = new GoogleGenAI({ apiKey });
-
         const imagePart = {
             inlineData: {
                 mimeType: image.mimeType,
@@ -37,7 +38,6 @@ export const generateAltText = async (
         });
 
         const text = response.text.trim();
-        // Sometimes the model might still wrap the output in quotes.
         return text.replace(/^["']|["']$/g, '');
 
     } catch (error) {
