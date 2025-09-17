@@ -43,13 +43,6 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLLabelElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        document.getElementById('dropzone-file')?.click();
-    }
-  };
-
   return (
     <div className="flex items-center justify-center w-full">
       <label
@@ -58,11 +51,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected }) => {
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-        role="button"
-        aria-label={t('uploadTitle')}
-        className={`flex flex-col items-center justify-center w-full h-96 border-4 border-dashed rounded-3xl cursor-pointer transition-all duration-300 ease-in-out-quad focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light
+        className={`flex flex-col items-center justify-center w-full h-96 border-4 border-dashed rounded-3xl cursor-pointer transition-all duration-300 ease-in-out-quad
                     ${isDragging ? 'border-primary-light dark:border-primary-dark bg-orange-50 dark:bg-background-dark scale-105' : 'border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark hover:border-primary-light/50'}`}
       >
         <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">

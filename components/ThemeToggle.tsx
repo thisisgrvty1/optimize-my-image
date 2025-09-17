@@ -11,15 +11,21 @@ const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={toggleThemeMode}
-      className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-foreground-light dark:text-foreground-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-light dark:focus-visible:ring-offset-background-dark dark:focus-visible:ring-primary-dark"
+      className="relative inline-flex items-center h-10 w-20 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light dark:focus:ring-offset-background-dark dark:focus:ring-primary-dark"
       aria-label={t('toggleTheme')}
     >
       <span className="sr-only">{t('toggleTheme')}</span>
-      {themeMode === 'dark' ? (
-        <MoonIcon className="h-5 w-5 text-primary-dark" />
-      ) : (
-        <SunIcon className="h-5 w-5 text-yellow-500" />
-      )}
+      <span
+        className={`${
+          themeMode === 'dark' ? 'translate-x-10' : 'translate-x-1'
+        } inline-block w-8 h-8 transform bg-card-light dark:bg-gray-900 rounded-full transition-transform duration-300 ease-in-out-quad shadow-lg flex items-center justify-center`}
+      >
+        {themeMode === 'dark' ? (
+          <MoonIcon className="h-5 w-5 text-primary-dark" />
+        ) : (
+          <SunIcon className="h-5 w-5 text-yellow-500" />
+        )}
+      </span>
     </button>
   );
 };

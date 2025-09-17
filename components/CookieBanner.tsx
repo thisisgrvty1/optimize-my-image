@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useCookieConsent } from '../hooks/useCookieConsent';
 import { useI8n } from '../hooks/useI8n';
 import Button from './ui/Button';
@@ -13,33 +13,20 @@ interface CookieBannerProps {
 const CookieBanner: React.FC<CookieBannerProps> = ({ onNavigate }) => {
   const { showBanner, acceptAll, declineAll, openSettings } = useCookieConsent();
   const { t } = useI8n();
-  const bannerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (showBanner && bannerRef.current) {
-        bannerRef.current.focus();
-    }
-  }, [showBanner]);
 
   if (!showBanner) {
     return null;
   }
 
   return (
-    <div 
-      ref={bannerRef}
-      tabIndex={-1}
-      className="fixed bottom-0 right-0 left-0 sm:left-auto z-50 p-4 animate-slide-up-in focus:outline-none" 
-      role="region" 
-      aria-labelledby="cookie-banner-title"
-    >
+    <div className="fixed bottom-0 right-0 left-0 sm:left-auto z-50 p-4 animate-slide-up-in" role="region" aria-label="Cookie consent">
       <Card className="max-w-md ml-auto">
         <div className="flex items-start space-x-4">
           <div className="flex-shrink-0 text-primary-light dark:text-primary-dark">
               <CookieIcon className="w-8 h-8"/>
           </div>
           <div>
-              <h2 id="cookie-banner-title" className="text-lg font-bold text-foreground-light dark:text-foreground-dark">{t('cookieBannerTitle')}</h2>
+              <h2 className="text-lg font-bold text-foreground-light dark:text-foreground-dark">{t('cookieBannerTitle')}</h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-4">
                   {t('cookieBannerText')}
                   {' '}

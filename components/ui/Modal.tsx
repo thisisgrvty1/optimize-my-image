@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { XIcon } from '../icons/XIcon';
-import { useI8n } from '../../hooks/useI8n';
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,7 +10,6 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
   const modalRef = useRef<HTMLDivElement>(null);
-  const { t } = useI8n();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -81,8 +79,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-light"
-            aria-label={t('closeModal')}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            aria-label="Close modal"
           >
             <XIcon className="h-6 w-6" />
           </button>

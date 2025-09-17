@@ -3,7 +3,7 @@ export type ThemeName = 'orange' | 'rose' | 'violet' | 'blue' | 'green' | 'slate
 
 export type Language = 'en' | 'de';
 
-export type View = 'landing' | 'optimizer' | 'imprint' | 'privacy' | 'changelog';
+export type View = 'landing' | 'optimizer' | 'imprint' | 'privacy';
 
 export type CookieConsent = {
   necessary: boolean;

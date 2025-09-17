@@ -36,12 +36,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, playIntro }) => {
     }
     gsap.registerPlugin(ScrollTrigger);
     
-    const componentRef = component.current; // Capture ref value
     const ctx = gsap.context(() => {
         // --- PERFORMANCE & AESTHETIC SETTINGS ---
+        const scrubVal = true; // Use GSAP's built-in smoothing for a natural feel
         ScrollTrigger.defaults({ markers: false }); // Change to true for debugging
 
-        // --- INTRO ANIMATION (runs on all devices) ---
+        // --- INTRO ANIMATION ---
         if (playIntro) {
             gsap.timeline({ defaults: { ease: 'power3.out' } })
               .from('.hero-title', { opacity: 0, y: 30, duration: 0.7, delay: 0.3 })
@@ -50,117 +50,94 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, playIntro }) => {
               .from('.hero-visual', { opacity: 0, scale: 0.9, y: 40, duration: 0.8 }, "-=0.6");
         }
 
-        // --- RESPONSIVE ANIMATIONS ---
-        ScrollTrigger.matchMedia({
-            // ===== DESKTOP ANIMATIONS (screens wider than 768px) =====
-            "(min-width: 768px)": function() {
-                const scrubVal = true; // Use smooth scrubbing on desktop
-
-                // --- HERO PARALLAX ---
-                gsap.timeline({
-                    scrollTrigger: {
-                        trigger: '.hero-section',
-                        start: 'top top',
-                        end: 'bottom top',
-                        scrub: scrubVal,
-                    }
-                })
-                .to('.hero-title, .hero-subtitle, .hero-cta', { yPercent: -40, autoAlpha: 0.5 }, 0)
-                .to('.hero-visual', { yPercent: 20, scale: 0.9, autoAlpha: 0.5 }, 0);
-
-                // --- SECTION TITLES ---
-                // FIX: Removed type argument from gsap.utils.toArray. Since gsap is typed as `any`, this was causing an "Untyped function calls may not accept type arguments" error.
-                gsap.utils.toArray('.section-title').forEach(el => {
-                    gsap.from(el, {
-                        yPercent: 50, autoAlpha: 0, scrollTrigger: {
-                            trigger: el, start: 'top 90%', end: 'top 70%', scrub: scrubVal
-                        }
-                    });
-                });
-
-                // --- FANCY SECTION ENTRANCES ---
-                const sections = [
-                    '.drag-drop-section-new', 
-                    '.features-section .glass-card-glow', 
-                    '.privacy-section .privacy-content'
-                ];
-                sections.forEach(selector => {
-                    gsap.from(selector, {
-                        yPercent: 20, autoAlpha: 0, scale: 0.9, scrollTrigger: {
-                            trigger: selector, start: 'top 80%', end: 'center 70%', scrub: scrubVal
-                        }
-                    });
-                });
-
-                // --- AI FEATURE SECTION ---
-                gsap.timeline({
-                    scrollTrigger: {
-                        trigger: '.ai-feature-section', start: 'top 80%', end: 'center 70%', scrub: scrubVal
-                    }
-                })
-                .from('.ai-text-content > *', { autoAlpha: 0, y: 30, stagger: 0.2 })
-                .from('.ai-visual-content', { autoAlpha: 0, scale: 0.8, rotation: -5, y: 50 }, '<');
-
-                // --- HOW IT WORKS STEPS ---
-                // FIX: Removed type argument from gsap.utils.toArray. Since gsap is typed as `any`, this was causing an "Untyped function calls may not accept type arguments" error.
-                gsap.utils.toArray('.how-it-works-step').forEach((step, i) => {
-                    const isReversed = i % 2 !== 0;
-                    const visual = step.querySelector('.step-visual');
-                    const textElements = step.querySelectorAll('.step-text > *');
-                    const tl = gsap.timeline({
-                        scrollTrigger: { trigger: step, start: 'top 85%', end: 'center 70%', scrub: scrubVal }
-                    });
-                    tl.from(visual, { autoAlpha: 0, y: 50, scale: 0.9 })
-                      .from(textElements, { autoAlpha: 0, x: isReversed ? 50 : -50, stagger: 0.1 }, "-=0.5");
-                    gsap.to(visual, {
-                        yPercent: -15, ease: 'none', scrollTrigger: {
-                            trigger: step, start: 'top bottom', end: 'bottom top', scrub: scrubVal
-                        }
-                    });
-                });
-
-                // --- FINAL CTA ---
-                gsap.timeline({
-                    scrollTrigger: {
-                        trigger: '.final-cta-section', start: 'top 80%', end: 'center 70%', scrub: scrubVal
-                    }
-                })
-                .from('.cta-text-content > *', { y: 30, autoAlpha: 0, stagger: 0.15 })
-                .from('.cta-visual-content', { scale: 0.9, autoAlpha: 0 }, "-=0.3");
-            },
-
-            // ===== MOBILE ANIMATIONS (screens 768px and smaller) =====
-            "(max-width: 768px)": function() {
-                // Generic, performant fade-in for all major sections
-                const sections = [
-                    '.hero-visual',
-                    '.drag-drop-section-new', 
-                    '.features-section',
-                    '.ai-feature-section',
-                    '.final-cta-section',
-                    '.privacy-section',
-                    '.how-it-works-section' // Animate the whole section at once
-                ];
-
-                sections.forEach(selector => {
-                    gsap.from(selector, {
-                        autoAlpha: 0,
-                        y: 50,
-                        duration: 0.8,
-                        ease: 'power3.out',
-                        scrollTrigger: {
-                            trigger: selector,
-                            start: 'top 90%',
-                            toggleActions: 'play none none none', // More performant than scrub
-                        }
-                    });
-                });
+        // --- HERO PARALLAX ---
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: '.hero-section',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: scrubVal,
             }
+        })
+        .to('.hero-title, .hero-subtitle, .hero-cta', { yPercent: -40, autoAlpha: 0 }, 0)
+        .to('.hero-visual', { yPercent: 20, scale: 0.9, autoAlpha: 0.5 }, 0);
+
+        // --- SECTION TITLES ---
+        gsap.utils.toArray('.section-title').forEach((el: HTMLElement) => {
+            gsap.from(el, {
+                yPercent: 50,
+                autoAlpha: 0,
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 90%',
+                    end: 'top 70%',
+                    scrub: scrubVal,
+                }
+            });
         });
         
-        // This AI Demo animation is simple enough to run on both
+        // --- DRAG & DROP GLOW SECTION ---
+        const dndGlowSection = '.drag-drop-glow-section';
+        if (document.querySelector(dndGlowSection)) {
+            gsap.from(dndGlowSection, {
+                yPercent: 20,
+                autoAlpha: 0,
+                scale: 0.9,
+                scrollTrigger: {
+                    trigger: '.hero-section',
+                    start: 'bottom 80%',
+                    end: 'bottom 50%',
+                    scrub: scrubVal,
+                }
+            });
+        }
+        
+        // --- FEATURES SECTION ---
+        gsap.from('.features-section .glass-card-glow', {
+            yPercent: 20,
+            autoAlpha: 0,
+            scale: 0.9,
+            scrollTrigger: {
+                trigger: '.features-section',
+                start: 'top 80%',
+                end: 'center 70%',
+                scrub: scrubVal,
+            }
+        });
+
+        // --- AI FEATURE SECTION ---
         const aiSection = '.ai-feature-section';
         if (document.querySelector(aiSection)) {
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: aiSection,
+                    start: 'top 80%',
+                    end: 'center 70%',
+                    scrub: scrubVal,
+                }
+            });
+            // Animate the title first, as requested
+            tl.from('.ai-text-content .section-title', {
+                autoAlpha: 0,
+                y: 30,
+                ease: 'power2.out'
+            })
+            // Then, animate the description text
+            .from('.ai-text-content .section-description', {
+                autoAlpha: 0,
+                y: 20,
+                ease: 'power2.out'
+            }, '+=0.2') // Stagger slightly after the title
+            // Animate the visual content to appear alongside the description for a dynamic effect
+            .from('.ai-visual-content', {
+                autoAlpha: 0,
+                scale: 0.8,
+                rotation: -5,
+                y: 50,
+                ease: 'power2.out'
+            }, '<'); // '<' starts this animation at the same time as the previous one (the description)
+              
+            // Demo animation
             const demoTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: aiSection,
@@ -172,13 +149,90 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, playIntro }) => {
             demoTl.to('.ai-generate-button', { autoAlpha: 0, scale: 0.8, duration: 0.4, delay: 2 })
                   .to('.ai-alt-text-result', { autoAlpha: 1, duration: 0.4 }, '-=0.2');
         }
+        
+        // --- FINAL CTA ---
+        const ctaTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.final-cta-section',
+                start: 'top 80%',
+                end: 'center 70%',
+                scrub: scrubVal,
+            }
+        });
+        ctaTl.from('.cta-text-content > *', { y: 30, autoAlpha: 0, stagger: 0.15 })
+             .from('.cta-visual-content', { scale: 0.9, autoAlpha: 0 }, "-=0.3");
 
-    }, componentRef); // Use the captured ref
+        // --- PRIVACY SECTION ---
+        gsap.from('.privacy-section .privacy-content', {
+            yPercent: 20,
+            autoAlpha: 0,
+            scale: 0.9,
+            scrollTrigger: {
+                trigger: '.privacy-section',
+                start: 'top 80%',
+                end: 'center 70%',
+                scrub: scrubVal,
+            }
+        });
+        
+        // --- HOW IT WORKS SECTION ---
+        gsap.utils.toArray('.how-it-works-step').forEach((step: HTMLElement, i: number) => {
+            const isReversed = i % 2 !== 0;
+            const visual = step.querySelector('.step-visual');
+            const textElements = step.querySelectorAll('.step-text > *');
 
-    return () => {
-        ctx.revert();
-    };
-}, [playIntro]);
+            gsap.set(visual, { autoAlpha: 0, y: 50, scale: 0.9 });
+            gsap.set(textElements, { autoAlpha: 0, x: isReversed ? 50 : -50 });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: step,
+                    start: 'top 85%',
+                    end: 'center 70%',
+                    scrub: scrubVal,
+                }
+            });
+
+            tl.to(visual, { autoAlpha: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out' })
+              .to(textElements, {
+                  autoAlpha: 1,
+                  x: 0,
+                  stagger: 0.1,
+                  duration: 0.8,
+                  ease: 'power3.out'
+              }, "-=0.8");
+            
+            // Parallax effect for the visual element
+            gsap.to(visual, {
+                yPercent: -15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: step,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: scrubVal
+                }
+            });
+        });
+        
+        const ctaButton = ".how-it-works-cta";
+        if (document.querySelector(ctaButton)) {
+            gsap.from(ctaButton, {
+                autoAlpha: 0,
+                y: 50,
+                scrollTrigger: {
+                    trigger: ctaButton,
+                    start: 'top 95%',
+                    end: 'bottom 80%',
+                    scrub: scrubVal,
+                }
+            });
+        }
+
+    }, component);
+
+    return () => ctx.revert();
+  }, [playIntro]);
 
   const features = [
     { icon: <ResizeIcon className="w-10 h-10" />, title: t('featureResizeTitle'), description: t('featureResizeDesc') },
@@ -249,16 +303,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart, playIntro }) => {
       </section>
 
       {/* Drag and Drop Section */}
-      <section className="drag-drop-section-new container mx-auto text-center py-16 md:py-24">
-        <div className="mb-8">
-          <UploadIcon className="w-24 h-24 text-primary-light dark:text-primary-dark mx-auto animate-icon-glow-vibrant"/>
+      <section className="drag-drop-glow-section container mx-auto -mt-16 md:-mt-24 relative z-10 rounded-[40px]">
+        <div className="blob blob1" aria-hidden="true"></div>
+        <div className="blob blob2" aria-hidden="true"></div>
+        <div className="relative glass-card-glow rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-center">
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="mb-6 animate-icon-glow">
+              <UploadIcon className="w-16 h-16 md:w-20 md:h-20 text-primary-light dark:text-primary-dark" />
+            </div>
+            <h2 className="section-title text-4xl font-black mb-4 text-gradient-theme">{t('featureDragDropTitle')}</h2>
+            <p className="section-description max-w-2xl mx-auto text-lg text-foreground-light/90 dark:text-foreground-dark/90">{t('featureDragDropDesc')}</p>
+          </div>
         </div>
-        <h2 className="text-6xl md:text-8xl font-black text-foreground-light dark:text-foreground-dark !leading-tight tracking-tighter">
-          {t('featureDragDropTitle')}
-        </h2>
-        <p className="max-w-2xl mx-auto text-xl md:text-2xl text-gradient-theme mt-6 font-bold">
-          {t('featureDragDropDesc')}
-        </p>
       </section>
 
       {/* Features Section */}

@@ -1,59 +1,44 @@
-import React, { useState, useCallback, useEffect, useRef, lazy, Suspense } from 'react';
+
+
+
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ImageFile, ImageSettings, View } from './types';
 import { processImage, getImageMetadata } from './services/imageService';
 import { generateFileName } from './utils/fileUtils';
 import Header from './components/Header';
+import FileUpload from './components/FileUpload';
 import BatchActions from './components/BatchActions';
+import ImageEditorList from './components/ImageEditorList';
+import LandingPage from './components/LandingPage';
 import Breadcrumbs from './components/Breadcrumbs';
+import ImprintPage from './components/ImprintPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import Footer from './components/Footer';
 import { MAX_FILES } from './constants';
 import { useI8n } from './hooks/useI8n';
 import { useCookieConsent } from './hooks/useCookieConsent';
 import CookieBanner from './components/CookieBanner';
+import CookieSettingsModal from './components/CookieSettingsModal';
 import IntroAnimation from './components/IntroAnimation';
-import { generateAltText } from './services/geminiService';
-import { fileToBase64 } from './utils/imageUtils';
-import { SpinnerIcon } from './components/icons/SpinnerIcon';
-
-const FileUpload = lazy(() => import('./components/FileUpload'));
-const ImageEditorList = lazy(() => import('./components/ImageEditorList'));
-const LandingPage = lazy(() => import('./components/LandingPage'));
-const ImprintPage = lazy(() => import('./components/ImprintPage'));
-const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage'));
-const ChangelogPage = lazy(() => import('./components/ChangelogPage'));
-const CookieSettingsModal = lazy(() => import('./components/CookieSettingsModal'));
-const DragDropOverlay = lazy(() => import('./components/DragDropOverlay'));
+import DragDropOverlay from './components/DragDropOverlay';
 
 declare var JSZip: any;
-
-const SESSION_KEY = 'imageOptimizerSession';
-
-const dataURLtoFile = async (dataUrl: string, name: string, type: string, lastModified: number): Promise<File> => {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    return new File([blob], name, { type, lastModified });
-};
-
-const PageLoader: React.FC = () => (
-    <div className="flex justify-center items-center py-20">
-      <SpinnerIcon className="w-12 h-12 animate-spin text-primary-light dark:text-primary-dark" />
-    </div>
-);
 
 const App: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
   const [applyToAll, setApplyToAll] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [isGeneratingAllAltTexts, setIsGeneratingAllAltTexts] = useState(false);
   const [view, setView] = useState<View>('landing');
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const dragCounter = useRef(0);
   const { t, language } = useI8n();
   const { consent, runAnalyticsScripts } = useCookieConsent();
-  const [isSessionLoaded, setIsSessionLoaded] = useState(false);
+
+  // State for one-time intro animation
   const [isInitialSession] = useState(() => sessionStorage.getItem('introPlayed') !== 'true');
   const [showIntro, setShowIntro] = useState(isInitialSession);
   const [playContentIntro, setPlayContentIntro] = useState(isInitialSession);
+
 
   useEffect(() => {
     if (consent?.analytics) {
@@ -66,76 +51,13 @@ const App: React.FC = () => {
   }, [t, language]);
   
   useEffect(() => {
+    // This effect ensures the content intro animation only plays once
+    // by setting playContentIntro to false after the animation has had time to complete.
     if (playContentIntro) {
-      const timer = setTimeout(() => setPlayContentIntro(false), 1000);
+      const timer = setTimeout(() => setPlayContentIntro(false), 1000); // Animation duration is ~0.7s
       return () => clearTimeout(timer);
     }
   }, [playContentIntro]);
-
-  useEffect(() => {
-    const loadSession = async () => {
-        const savedSession = localStorage.getItem(SESSION_KEY);
-        if (savedSession) {
-            try {
-                const parsed = JSON.parse(savedSession);
-                const imageFilesFromSession: ImageFile[] = await Promise.all(
-                    parsed.map(async (sFile: any) => {
-                        const originalFile = await dataURLtoFile(
-                            sFile.originalFile.dataUrl,
-                            sFile.originalFile.name,
-                            sFile.originalFile.type,
-                            sFile.originalFile.lastModified
-                        );
-                        return {
-                            ...sFile,
-                            originalFile,
-                            previewUrl: URL.createObjectURL(originalFile),
-                        };
-                    })
-                );
-                setImageFiles(imageFilesFromSession);
-                setView('optimizer');
-            } catch (error) {
-                console.error("Failed to load session:", error);
-                localStorage.removeItem(SESSION_KEY);
-            }
-        }
-        setIsSessionLoaded(true);
-    };
-    loadSession();
-  }, []);
-
-  useEffect(() => {
-    if (!isSessionLoaded) return;
-
-    const saveSession = async () => {
-        if (imageFiles.length === 0) {
-            localStorage.removeItem(SESSION_KEY);
-            return;
-        }
-        try {
-            const serializableFiles = await Promise.all(
-                imageFiles.map(async (file) => {
-                    const { mimeType, data } = await fileToBase64(file.originalFile);
-                    return {
-                        ...file,
-                        originalFile: {
-                            dataUrl: `data:${mimeType};base64,${data}`,
-                            name: file.originalFile.name,
-                            type: file.originalFile.type,
-                            lastModified: file.originalFile.lastModified,
-                        },
-                        previewUrl: '',
-                    };
-                })
-            );
-            localStorage.setItem(SESSION_KEY, JSON.stringify(serializableFiles));
-        } catch (error) {
-            console.error("Failed to save session:", error);
-        }
-    };
-    saveSession();
-  }, [imageFiles, isSessionLoaded]);
 
   const handleIntroEnd = () => {
     sessionStorage.setItem('introPlayed', 'true');
@@ -148,9 +70,12 @@ const App: React.FC = () => {
   }, [imageFiles]);
   
   const navigateTo = useCallback((newView: View) => {
+    if (newView === 'landing' && view !== 'landing') {
+        handleRemoveAll();
+    }
     setView(newView);
     window.scrollTo(0, 0);
-  }, []);
+  }, [view, handleRemoveAll]);
 
   const handleFilesSelected = useCallback(async (files: FileList) => {
     const newImageFiles: ImageFile[] = [];
@@ -188,7 +113,7 @@ const App: React.FC = () => {
     }
 
     if (newImageFiles.length > 0) {
-        setImageFiles(prev => [...newImageFiles, ...prev]);
+        setImageFiles(prev => [...prev, ...newImageFiles]);
     }
   }, [imageFiles.length, t]);
   
@@ -337,81 +262,22 @@ const App: React.FC = () => {
       setIsExporting(false);
     }
   }, [imageFiles, isExporting, updateProcessingState, t]);
-  
-  const handleGenerateAllAltTexts = useCallback(async () => {
-    if (!process.env.API_KEY) {
-      alert(t('apiKeyMissingError'));
-      return;
-    }
-    if (imageFiles.length === 0 || isGeneratingAllAltTexts) return;
-
-    setIsGeneratingAllAltTexts(true);
-    try {
-      const altTextPromises = imageFiles.map(async (file) => {
-        try {
-          const { mimeType, data } = await fileToBase64(file.originalFile);
-          const generatedText = await generateAltText({ mimeType, data }, language);
-          return { id: file.id, altText: generatedText };
-        } catch (error) {
-          console.error(`Failed to generate alt text for ${file.originalFile.name}:`, error);
-          return { id: file.id, altText: file.settings.altText };
-        }
-      });
-
-      const results = await Promise.all(altTextPromises);
-      
-      setImageFiles(prevFiles => 
-        prevFiles.map(file => {
-          const result = results.find(r => r.id === file.id);
-          if (result) {
-            return { ...file, settings: { ...file.settings, altText: result.altText } };
-          }
-          return file;
-        })
-      );
-
-    } catch (error) {
-      console.error('Error during batch alt text generation:', error);
-      alert(t('altTextGenerationFailed'));
-    } finally {
-      setIsGeneratingAllAltTexts(false);
-    }
-  }, [imageFiles, isGeneratingAllAltTexts, language, t]);
 
   const renderContent = () => {
-    if (!isSessionLoaded) {
-        return null;
-    }
-    
     const optimizerContent = (
       <>
         {imageFiles.length === 0 ? (
           <FileUpload onFilesSelected={handleFilesSelected} />
         ) : (
           <>
-            <input
-                id="add-more-files-input"
-                type="file"
-                className="hidden"
-                multiple
-                onChange={(e) => {
-                    if (e.target.files) {
-                        handleFilesSelected(e.target.files);
-                        e.target.value = '';
-                    }
-                }}
-                accept="image/png, image/jpeg, image/webp, image/gif"
-            />
             <BatchActions
               applyToAll={applyToAll}
               onApplyToAllChange={setApplyToAll}
               onExportAll={handleExportAll}
-              onAddMore={() => document.getElementById('add-more-files-input')?.click()}
+              onAddMore={() => document.getElementById('dropzone-file')?.click()}
               onClearAll={handleRemoveAll}
-              onGenerateAllAltTexts={handleGenerateAllAltTexts}
               fileCount={imageFiles.length}
               isExporting={isExporting}
-              isGeneratingAltTexts={isGeneratingAllAltTexts}
             />
             <ImageEditorList
               files={imageFiles}
@@ -446,13 +312,6 @@ const App: React.FC = () => {
             <PrivacyPolicyPage />
           </div>
         );
-      case 'changelog':
-        return (
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Breadcrumbs view={view} onNavigateHome={() => navigateTo('landing')} />
-                <ChangelogPage />
-            </div>
-        );
       case 'landing':
       default:
         return <LandingPage onStart={() => navigateTo('optimizer')} playIntro={playContentIntro} />;
@@ -464,21 +323,17 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans overflow-x-hidden">
-      <Header onNavigateHome={() => navigateTo('landing')} onNavigate={navigateTo} playIntro={playContentIntro && view === 'landing'} sessionFileCount={imageFiles.length} currentView={view} />
+    <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans">
+      <Header onNavigateHome={() => navigateTo('landing')} playIntro={playContentIntro && view === 'landing'} />
       <main className="flex-grow">
         <div key={view} className="animate-view-enter">
-          <Suspense fallback={<PageLoader />}>
-            {renderContent()}
-          </Suspense>
+          {renderContent()}
         </div>
       </main>
       <Footer onNavigate={navigateTo} />
       <CookieBanner onNavigate={navigateTo} />
-      <Suspense fallback={null}>
-        <CookieSettingsModal />
-        <DragDropOverlay isVisible={isDraggingOver} />
-      </Suspense>
+      <CookieSettingsModal />
+      <DragDropOverlay isVisible={isDraggingOver} />
     </div>
   );
 };

@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Optimize my Image v1.4.5</title>
+    <title>Optimize my Image v1.3.9</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -207,7 +207,7 @@
 
       /* Global smooth transitions for theme changes */
       *, *::before, *::after {
-        transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+        transition: background-color var(--duration-medium) var(--ease-in-out-quad), color var(--duration-medium) var(--ease-in-out-quad), border-color var(--duration-medium) var(--ease-in-out-quad), box-shadow var(--duration-medium) var(--ease-in-out-quad);
       }
 
       body {
@@ -521,23 +521,6 @@
           }
       }
 
-      @keyframes icon-glow-vibrant-light {
-        0%, 100% { 
-          filter: drop-shadow(0 0 15px rgb(var(--color-primary-light) / 0.7)) drop-shadow(0 0 5px rgb(var(--color-secondary-light) / 0.5));
-        }
-        50% { 
-          filter: drop-shadow(0 0 30px rgb(var(--color-primary-light) / 1)) drop-shadow(0 0 10px rgb(var(--color-secondary-light) / 0.8)); 
-        }
-      }
-      @keyframes icon-glow-vibrant-dark {
-        0%, 100% { 
-          filter: drop-shadow(0 0 15px rgb(var(--color-primary-dark) / 0.7)) drop-shadow(0 0 5px rgb(var(--color-secondary-dark) / 0.5));
-        }
-        50% { 
-          filter: drop-shadow(0 0 30px rgb(var(--color-primary-dark) / 1)) drop-shadow(0 0 10px rgb(var(--color-secondary-dark) / 0.8)); 
-        }
-      }
-
       .animate-shockwave span {
           position: absolute;
           inset: 0;
@@ -561,13 +544,6 @@
       }
       .dark .animate-icon-glow-intense {
           animation-name: icon-glow-intense-dark;
-      }
-      
-      .animate-icon-glow-vibrant {
-        animation: icon-glow-vibrant-light 3s infinite ease-in-out;
-      }
-      .dark .animate-icon-glow-vibrant {
-        animation-name: icon-glow-vibrant-dark;
       }
 
       /* How it works Section */
@@ -711,57 +687,6 @@
               transform: scale(1.2);
               filter: drop-shadow(0 0 15px rgb(var(--color-primary-dark) / 0.8));
           }
-      }
-
-      /* Glowing button animation */
-      @keyframes pulse-glow-button-light {
-        0%, 100% { box-shadow: 0 0 15px -5px rgb(var(--color-primary-light) / 0.5), 0 0 5px -5px rgb(var(--color-primary-light) / 0.5), var(--shadow-theme-lg); }
-        50% { box-shadow: 0 0 25px 0px rgb(var(--color-primary-light) / 0.7), 0 0 10px -5px rgb(var(--color-primary-light) / 0.7), var(--shadow-theme-xl); }
-      }
-      @keyframes pulse-glow-button-dark {
-        0%, 100% { box-shadow: 0 0 15px -5px rgb(var(--color-primary-dark) / 0.5), 0 0 5px -5px rgb(var(--color-primary-dark) / 0.5), var(--shadow-theme-lg); }
-        50% { box-shadow: 0 0 25px 0px rgb(var(--color-primary-dark) / 0.7), 0 0 10px -5px rgb(var(--color-primary-dark) / 0.7), var(--shadow-theme-xl); }
-      }
-      .animate-pulse-glow-button {
-        animation: pulse-glow-button-light 3s infinite ease-in-out;
-      }
-      .dark .animate-pulse-glow-button {
-        animation-name: pulse-glow-button-dark;
-      }
-
-      /* Mobile Performance Optimizations */
-      @media (max-width: 768px) {
-        .drag-drop-glow-section .blob,
-        .gradient-bg .blob {
-          filter: blur(80px); /* Reduce blur intensity */
-          animation-duration: 25s !important; /* Slow down animations */
-        }
-        
-        .drag-drop-glow-section .blob1 {
-          width: 300px;
-          height: 300px;
-        }
-          .drag-drop-glow-section .blob2 {
-          width: 400px;
-          height: 400px;
-        }
-
-        .glass-card-glow, .glass-card {
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
-        }
-        
-        .how-it-works-step .step-number {
-          font-size: 6rem; /* Reduce giant number size */
-        }
-
-        .hero-title {
-            font-size: 3rem; /* 48px, instead of 5xl/7xl */
-            line-height: 1.1;
-        }
-        .hero-subtitle {
-            font-size: 1.125rem; /* 18px */
-        }
       }
     </style>
 <script type="importmap">

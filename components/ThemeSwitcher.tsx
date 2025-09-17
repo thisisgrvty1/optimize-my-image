@@ -40,20 +40,14 @@ const ThemeSwitcher: React.FC = () => {
 
   const handleThemeChange = (name: ThemeName) => {
     setThemeName(name);
-    setIsOpen(false);
   };
-  
-  const buttonId = "theme-switcher-button";
 
   return (
     <div className="relative">
       <button
-        id={buttonId}
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        aria-haspopup="true"
-        aria-expanded={isOpen}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-foreground-light dark:text-foreground-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-light dark:focus-visible:ring-offset-background-dark dark:focus-visible:ring-primary-dark"
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 text-foreground-light dark:text-foreground-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-light dark:focus:ring-offset-background-dark dark:focus:ring-primary-dark"
         aria-label={t('themeSwitcherTitle')}
       >
         <PaletteIcon className="w-5 h-5" />
@@ -62,9 +56,7 @@ const ThemeSwitcher: React.FC = () => {
       {isOpen && (
         <div
           ref={popoverRef}
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby={buttonId}
+          onMouseLeave={() => setIsOpen(false)}
           className="absolute right-0 mt-2 w-48 bg-card-light dark:bg-card-dark rounded-2xl shadow-lg-theme border border-border-light dark:border-border-dark p-2 animate-fade-in"
           style={{ animationDuration: '150ms' }}
         >
@@ -72,10 +64,8 @@ const ThemeSwitcher: React.FC = () => {
             {themes.map((theme) => (
               <button
                 key={theme.name}
-                role="menuitemradio"
-                aria-checked={themeName === theme.name}
                 onClick={() => handleThemeChange(theme.name)}
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-opacity duration-200 ease-in-out-quad hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-card-dark focus-visible:ring-primary-dark ${theme.color}`}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-200 ease-in-out-quad hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-card-dark focus:ring-primary-dark ${theme.color}`}
                 aria-label={`Select ${theme.name} theme`}
               >
                 {themeName === theme.name && <CheckIcon className="w-6 h-6 text-white" />}
