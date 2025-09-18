@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2025-09-04
+
+### Added
+- **Session Persistence**: The application now automatically saves your current session (uploaded images and their settings) to your browser's local storage.
+- **Automatic Session Restore**: When you return to the app, your previous session is automatically restored, allowing you to continue where you left off.
+- **Interactive Session Indicator**: A new history icon in the header now indicates an active session. It displays the number of images and acts as a direct link to the editor view.
+
 ## [1.5.0] - 2025-09-03
 
 ### Changed

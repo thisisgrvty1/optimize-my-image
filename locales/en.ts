@@ -123,5 +123,6 @@ export default {
   "previewUpdatesHere": "Preview will update here",
   "qualityCheck": "Quality Check",
   "zoom2x": "2x Zoom",
-  "zoom4x": "4x Zoom"
+  "zoom4x": "4x Zoom",
+  "activeSessionIndicator": "View active session ({count} images)"
 };

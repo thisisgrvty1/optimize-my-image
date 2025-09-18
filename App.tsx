@@ -19,14 +19,65 @@ import CookieSettingsModal from './components/CookieSettingsModal';
 import IntroAnimation from './components/IntroAnimation';
 import DragDropOverlay from './components/DragDropOverlay';
 import ChangelogPage from './components/ChangelogPage';
+import { fileToBase64, dataURLtoFile } from './utils/imageUtils';
 
 declare var JSZip: any;
 
+const SESSION_KEY = 'image_optimizer_session';
+const LAST_VIEW_KEY = 'image_optimizer_last_view';
+
+// Type for serializable file data for localStorage
+interface SerializableImageFile {
+  id: string;
+  originalFile: {
+    name: string;
+    type: string;
+    data: string; // base64 representation
+  };
+  width: number;
+  height: number;
+  settings: ImageSettings;
+}
+
 const App: React.FC = () => {
-  const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
+  const [imageFiles, setImageFiles] = useState<ImageFile[]>(() => {
+    try {
+      const savedSession = localStorage.getItem(SESSION_KEY);
+      if (savedSession) {
+        const parsed: SerializableImageFile[] = JSON.parse(savedSession);
+        return parsed.map(item => {
+          const originalFile = dataURLtoFile(`data:${item.originalFile.type};base64,${item.originalFile.data}`, item.originalFile.name);
+          return {
+            id: item.id,
+            originalFile,
+            previewUrl: URL.createObjectURL(originalFile),
+            width: item.width,
+            height: item.height,
+            settings: item.settings,
+            processed: { isProcessing: false }
+          };
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load session from localStorage:", error);
+      localStorage.removeItem(SESSION_KEY); // Clear corrupted session
+    }
+    return [];
+  });
+
   const [applyToAll, setApplyToAll] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [view, setView] = useState<View>('landing');
+  
+  const [view, setView] = useState<View>(() => {
+    const lastView = sessionStorage.getItem(LAST_VIEW_KEY) as View;
+    const hasSession = localStorage.getItem(SESSION_KEY);
+    // If last view was optimizer and there's a session, restore it. Otherwise, landing.
+    if (lastView === 'optimizer' && hasSession && JSON.parse(hasSession).length > 0) {
+        return 'optimizer';
+    }
+    return 'landing';
+  });
+
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const dragCounter = useRef(0);
   const addMoreInputRef = useRef<HTMLInputElement>(null);
@@ -50,6 +101,46 @@ const App: React.FC = () => {
   }, [t, language]);
   
   useEffect(() => {
+    // Save the current view to sessionStorage for session restoration
+    if (view === 'optimizer' || view === 'landing') {
+        sessionStorage.setItem(LAST_VIEW_KEY, view);
+    }
+  }, [view]);
+
+  useEffect(() => {
+    // Debounced effect to save the current session to localStorage
+    const handler = setTimeout(async () => {
+      if (imageFiles.length > 0) {
+        try {
+          const serializableFiles: SerializableImageFile[] = await Promise.all(
+            imageFiles.map(async (file) => {
+              const { data } = await fileToBase64(file.originalFile);
+              return {
+                id: file.id,
+                originalFile: {
+                  name: file.originalFile.name,
+                  type: file.originalFile.type,
+                  data,
+                },
+                width: file.width,
+                height: file.height,
+                settings: file.settings,
+              };
+            })
+          );
+          localStorage.setItem(SESSION_KEY, JSON.stringify(serializableFiles));
+        } catch (error) {
+          console.error("Failed to save session to localStorage:", error);
+        }
+      } else {
+        localStorage.removeItem(SESSION_KEY);
+      }
+    }, 500); // Debounce saving by 500ms
+
+    return () => clearTimeout(handler);
+  }, [imageFiles]);
+
+  useEffect(() => {
     // This effect ensures the content intro animation only plays once
     // by setting playContentIntro to false after the animation has had time to complete.
     if (playContentIntro) {
@@ -69,12 +160,9 @@ const App: React.FC = () => {
   }, [imageFiles]);
   
   const navigateTo = useCallback((newView: View) => {
-    if (newView === 'landing' && view !== 'landing') {
-        handleRemoveAll();
-    }
     setView(newView);
     window.scrollTo(0, 0);
-  }, [view, handleRemoveAll]);
+  }, []);
 
   const handleFilesSelected = useCallback(async (files: FileList) => {
     const newImageFiles: ImageFile[] = [];
@@ -352,7 +440,13 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans">
-      <Header onNavigateHome={() => navigateTo('landing')} onNavigateToChangelog={() => navigateTo('changelog')} playIntro={playContentIntro && view === 'landing'} />
+      <Header 
+        onNavigateHome={() => navigateTo('landing')} 
+        onNavigateToChangelog={() => navigateTo('changelog')}
+        onNavigateToOptimizer={() => navigateTo('optimizer')}
+        sessionFileCount={imageFiles.length}
+        playIntro={playContentIntro && view === 'landing'}
+      />
       <main className="flex-grow">
         <div key={view} className="animate-view-enter">
           {renderContent()}
