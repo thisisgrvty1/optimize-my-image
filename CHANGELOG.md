@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-09-03
+
+### Changed
+- **Improved UX for Quality Check**: The zoom functionality is now always enabled and accessible directly on the image preview. The 2x and 4x zoom controls are permanently located on the top-right of the preview, removing the need to enable them in a separate settings modal.
+- **Simplified UI**: Removed the global settings modal and the corresponding gear icon from the header, streamlining the main interface.
+
 ## [1.3.9] - 2025-09-02
 
 ### Changed

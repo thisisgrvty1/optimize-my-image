@@ -18,9 +18,13 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
           <div className="flex flex-col sm:flex-row items-center text-center sm:text-left space-y-2 sm:space-y-0 sm:space-x-4 mb-4 sm:mb-0">
              <p className="font-semibold">{t('footerCopyright', { year: currentYear })}</p>
-             <span className="md:hidden text-xs font-semibold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
-               v1.3.9
-             </span>
+             <button
+                onClick={() => onNavigate('changelog')}
+                className="md:hidden text-xs font-semibold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
+                title={t('viewChangelog')}
+             >
+               v1.5.0
+             </button>
           </div>
           <div className="flex flex-wrap justify-center items-center space-x-6 font-bold">
             <button 

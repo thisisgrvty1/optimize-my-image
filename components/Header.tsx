@@ -9,10 +9,11 @@ import ApiKeyModal from './ApiKeyModal';
 
 interface HeaderProps {
   onNavigateHome: () => void;
+  onNavigateToChangelog: () => void;
   playIntro: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onNavigateHome, playIntro }) => {
+const Header: React.FC<HeaderProps> = ({ onNavigateHome, onNavigateToChangelog, playIntro }) => {
   const { t } = useI8n();
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 
@@ -27,9 +28,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigateHome, playIntro }) => {
                   <h1 className="text-xl sm:text-2xl font-extrabold text-foreground-light dark:text-foreground-dark">
                     {t('appTitle')}
                   </h1>
-                  <span className="hidden md:inline-block text-xs font-semibold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
-                    v1.3.9
-                  </span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering onNavigateHome
+                      onNavigateToChangelog();
+                    }}
+                    className="hidden md:inline-block text-xs font-semibold text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-primary-light dark:hover:text-primary-dark transition-colors focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    title={t('viewChangelog')}
+                  >
+                    v1.5.0
+                  </button>
               </div>
             </button>
             <div className="flex items-center space-x-2 sm:space-x-4">

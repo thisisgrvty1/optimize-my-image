@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ImageFile, ImageSettings, View } from './types';
 import { processImage, getImageMetadata } from './services/imageService';
@@ -21,6 +18,7 @@ import CookieBanner from './components/CookieBanner';
 import CookieSettingsModal from './components/CookieSettingsModal';
 import IntroAnimation from './components/IntroAnimation';
 import DragDropOverlay from './components/DragDropOverlay';
+import ChangelogPage from './components/ChangelogPage';
 
 declare var JSZip: any;
 
@@ -31,6 +29,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>('landing');
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const dragCounter = useRef(0);
+  const addMoreInputRef = useRef<HTMLInputElement>(null);
   const { t, language } = useI8n();
   const { consent, runAnalyticsScripts } = useCookieConsent();
 
@@ -113,10 +112,22 @@ const App: React.FC = () => {
     }
 
     if (newImageFiles.length > 0) {
-        setImageFiles(prev => [...prev, ...newImageFiles]);
+        setImageFiles(prev => [...newImageFiles, ...prev]);
     }
   }, [imageFiles.length, t]);
   
+  const handleAddMoreClick = () => {
+    addMoreInputRef.current?.click();
+  };
+
+  const handleAddMoreFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      handleFilesSelected(e.target.files);
+      // Reset the input's value to allow selecting the same file again.
+      e.target.value = '';
+    }
+  };
+
   useEffect(() => {
     const handleDragEnter = (e: DragEvent) => {
       e.preventDefault();
@@ -270,11 +281,21 @@ const App: React.FC = () => {
           <FileUpload onFilesSelected={handleFilesSelected} />
         ) : (
           <>
+            <input
+              ref={addMoreInputRef}
+              type="file"
+              className="hidden"
+              multiple
+              onChange={handleAddMoreFiles}
+              accept="image/png, image/jpeg, image/webp, image/gif"
+              aria-hidden="true"
+              tabIndex={-1}
+            />
             <BatchActions
               applyToAll={applyToAll}
               onApplyToAllChange={setApplyToAll}
               onExportAll={handleExportAll}
-              onAddMore={() => document.getElementById('dropzone-file')?.click()}
+              onAddMore={handleAddMoreClick}
               onClearAll={handleRemoveAll}
               fileCount={imageFiles.length}
               isExporting={isExporting}
@@ -312,6 +333,13 @@ const App: React.FC = () => {
             <PrivacyPolicyPage />
           </div>
         );
+      case 'changelog':
+        return (
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Breadcrumbs view={view} onNavigateHome={() => navigateTo('landing')} />
+            <ChangelogPage />
+          </div>
+        );
       case 'landing':
       default:
         return <LandingPage onStart={() => navigateTo('optimizer')} playIntro={playContentIntro} />;
@@ -324,7 +352,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark text-foreground-light dark:text-foreground-dark font-sans">
-      <Header onNavigateHome={() => navigateTo('landing')} playIntro={playContentIntro && view === 'landing'} />
+      <Header onNavigateHome={() => navigateTo('landing')} onNavigateToChangelog={() => navigateTo('changelog')} playIntro={playContentIntro && view === 'landing'} />
       <main className="flex-grow">
         <div key={view} className="animate-view-enter">
           {renderContent()}

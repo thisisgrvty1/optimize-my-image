@@ -68,6 +68,11 @@ export default {
   "breadcrumbOptimizer": "Optimizer",
   "breadcrumbImprint": "Imprint",
   "breadcrumbPrivacyPolicy": "Privacy Policy",
+  "breadcrumbChangelog": "Version History",
+  "changelogTitle": "Version History",
+  "latestVersion": "Latest Version",
+  "versionHistory": "Version History",
+  "viewChangelog": "View Version History",
   "footerCopyright": "© {year} Optimize my Image. All Rights Reserved.",
   "footerImprint": "Imprint",
   "footerPrivacyPolicy": "Privacy Policy",
@@ -115,5 +120,8 @@ export default {
   "original": "Original",
   "preview": "Preview",
   "processedPreview": "Processed image preview",
-  "previewUpdatesHere": "Preview will update here"
+  "previewUpdatesHere": "Preview will update here",
+  "qualityCheck": "Quality Check",
+  "zoom2x": "2x Zoom",
+  "zoom4x": "4x Zoom"
 };

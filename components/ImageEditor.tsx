@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useCallback, useMemo, useState, useRef } from 'react';
 import { ImageFile, ImageSettings, OutputFormat } from '../types';
 import { formatBytes, generateFileName } from '../utils/fileUtils';
 import { processImage } from '../services/imageService';
@@ -37,6 +37,13 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ file, onSettingsChange, onRem
   const [altTextError, setAltTextError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<EditorTab>('imageSettings');
   const [processedPreviewUrl, setProcessedPreviewUrl] = useState<string | null>(null);
+
+  // State for zoom/loupe feature
+  const [zoomLevel, setZoomLevel] = useState<number>(1); // 1: off, 2: 2x, 4: 4x
+  const [loupePosition, setLoupePosition] = useState({ x: 0, y: 0 });
+  const [isMouseInPreview, setIsMouseInPreview] = useState(false);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     // Effect to revoke the object URL when the component unmounts or the URL changes, to prevent memory leaks.
@@ -165,9 +172,60 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ file, onSettingsChange, onRem
                   <div>
                       <h3 className="text-center font-bold text-gray-600 dark:text-gray-400 mb-2">{t('preview')}</h3>
                       <div 
+                        ref={previewContainerRef}
+                        onMouseEnter={() => setIsMouseInPreview(true)}
+                        onMouseLeave={() => setIsMouseInPreview(false)}
+                        onMouseMove={(e) => {
+                            if (previewContainerRef.current) {
+                                const rect = previewContainerRef.current.getBoundingClientRect();
+                                setLoupePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                            }
+                        }}
                         className="relative w-full bg-background-light dark:bg-background-dark rounded-2xl border-2 border-border-light dark:border-border-dark flex items-center justify-center overflow-hidden"
-                        style={{ aspectRatio: `${width} / ${height}` }}
+                        style={{ aspectRatio: `${width} / ${height}`, cursor: zoomLevel > 1 && processedPreviewUrl ? 'crosshair' : 'default' }}
                       >
+                           {/* Zoom Controls */}
+                           {processedPreviewUrl && (
+                               <div className="absolute top-2 right-2 z-30 bg-black/40 backdrop-blur-sm rounded-full p-1 flex items-center space-x-1">
+                                  <button
+                                      onClick={() => setZoomLevel(prev => prev === 2 ? 1 : 2)}
+                                      title={t('zoom2x')}
+                                      className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${zoomLevel === 2 ? 'bg-primary-light text-white' : 'bg-white/20 text-white hover:bg-white/40'}`}
+                                  >
+                                      2x
+                                  </button>
+                                  <button
+                                      onClick={() => setZoomLevel(prev => prev === 4 ? 1 : 4)}
+                                      title={t('zoom4x')}
+                                      className={`px-3 py-1 text-xs font-bold rounded-full transition-colors ${zoomLevel === 4 ? 'bg-primary-light text-white' : 'bg-white/20 text-white hover:bg-white/40'}`}
+                                  >
+                                      4x
+                                  </button>
+                              </div>
+                           )}
+
+                           {/* Loupe Element */}
+                           {isMouseInPreview && zoomLevel > 1 && processedPreviewUrl && previewContainerRef.current && (
+                               <div
+                                   style={{
+                                       position: 'absolute',
+                                       width: '150px',
+                                       height: '150px',
+                                       borderRadius: '50%',
+                                       border: '3px solid white',
+                                       boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+                                       pointerEvents: 'none',
+                                       zIndex: 20,
+                                       left: `${loupePosition.x - 75}px`,
+                                       top: `${loupePosition.y - 75}px`,
+                                       backgroundImage: `url(${processedPreviewUrl})`,
+                                       backgroundRepeat: 'no-repeat',
+                                       backgroundSize: `${previewContainerRef.current.clientWidth * zoomLevel}px ${previewContainerRef.current.clientHeight * zoomLevel}px`,
+                                       backgroundPosition: `-${loupePosition.x * zoomLevel - 75}px -${loupePosition.y * zoomLevel - 75}px`,
+                                   }}
+                               />
+                           )}
+                           
                            <img 
                               src={processedPreviewUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}
                               alt={t('processedPreview')} 
